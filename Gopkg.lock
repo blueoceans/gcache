@@ -1,0 +1,37 @@
+memo = ""
+
+[[projects]]
+  branch = "master"
+  name = "cloud.google.com/go"
+  packages = ["compute/metadata"]
+  revision = "4fd61697e4491bf4a50c9e3439945e71c0f8de8d"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/protobuf"
+  packages = ["proto"]
+  revision = "1f49d83d9aa00e6ce4fc8258c71cc7786aec968a"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context","context/ctxhttp"]
+  revision = "1358eff22f0dd0c54fc521042cc607f6ff4b531a"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/oauth2"
+  packages = [".","google"]
+  revision = "3c3a985cb79f52a3190fbc056984415ca6763d01"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/api"
+  packages = ["drive/v3","googleapi"]
+  revision = "5d9c84e3b78a84b6ddc17f88164527f935501e94"
+
+[[projects]]
+  branch = "master"
+  name = "google.golang.org/appengine"
+  packages = [".","urlfetch"]
+  revision = "4f7eeb5305a4ba1966344836ba4af9996b7b4e05"
