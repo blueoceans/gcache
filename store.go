@@ -31,8 +31,8 @@ func init() {
 	random = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-// SetFolder sets name and permission to a top folder on Google Drive.
-func SetFolder(
+// SetRootFolder sets name and permission to a top folder on Google Drive.
+func SetRootFolder(
 	name string,
 	permission *drive.Permission,
 ) {
