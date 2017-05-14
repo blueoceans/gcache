@@ -119,7 +119,10 @@ func StoreGDrive(
 	r *http.Request,
 	name string,
 	payload *[]byte,
-) error {
+) (
+	*drive.File,
+	error,
+) {
 	n := 1
 retry:
 	service, err := drive.New(createGDriveClient(r))
@@ -133,15 +136,15 @@ retry:
 				goto retry
 			}
 		}
-		return err
+		return nil, err
 	}
 
 	folderID, err := getParentFolderID(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = service.Files.Create(&drive.File{
+	file, err := service.Files.Create(&drive.File{
 		Name:     name,
 		MimeType: mimeGSuiteDoc,
 		Parents:  []string{folderID},
@@ -156,9 +159,9 @@ retry:
 				goto retry
 			}
 		}
-		return err
+		return nil, err
 	}
-	return nil
+	return file, nil
 }
 
 func sleeping(
