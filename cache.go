@@ -21,7 +21,8 @@ var (
 func init() {
 }
 
-func getFileName(
+// GetFileName returns a file name on Google Drive.
+func GetFileName(
 	requestURI string,
 ) (
 	string,
@@ -48,8 +49,8 @@ func getFileName(
 	return uri.String(), nil
 }
 
-// get GDrive
-func getGDriveFile(
+// GetGDriveFile returns a file on Google Drive.
+func GetGDriveFile(
 	r *http.Request,
 	name string,
 	field googleapi.Field,

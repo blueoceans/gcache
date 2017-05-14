@@ -26,7 +26,7 @@ var vtests = []struct {
 
 func TestGetFileName(t *testing.T) {
 	for _, vt := range vtests {
-		if filename, err := getFileName(vt.url); err != nil {
+		if filename, err := GetFileName(vt.url); err != nil {
 			t.Errorf("%q, got %q", vt.url, err)
 		} else if filename != vt.filename {
 			t.Errorf("%q, want %q", filename, vt.filename)

@@ -31,7 +31,8 @@ func init() {
 	random = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-func setFolder(
+// SetFolder sets name and permission to a top folder on Google Drive.
+func SetFolder(
 	name string,
 	permission *drive.Permission,
 ) {
@@ -113,7 +114,8 @@ retry:
 	return file.Id, nil
 }
 
-func storeGDrive(
+// StoreGDrive stores a file to Google Drive.
+func StoreGDrive(
 	r *http.Request,
 	name string,
 	payload *[]byte,
