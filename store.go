@@ -12,8 +12,6 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
-const ()
-
 var (
 	parentFolderID string
 	random         *rand.Rand

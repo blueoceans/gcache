@@ -8,8 +8,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-const ()
-
 func createGDriveClient(
 	_ interface{},
 ) *http.Client {

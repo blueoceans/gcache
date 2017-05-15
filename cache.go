@@ -10,14 +10,9 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
-const ()
-
 var (
 	oauth2TokenSource oauth2.TokenSource // The token is valid for 30 minutes.
 )
-
-func init() {
-}
 
 // GetGDriveFile returns a file on Google Drive.
 func GetGDriveFile(
