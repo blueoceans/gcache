@@ -35,17 +35,8 @@ func StoreGDrive(
 
 	n := 1
 retry:
-	service, err := drive.New(createGDriveClient(r))
+	service, err := GetGDriveService(r)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		} else if IsServerError(err) {
-			n, err = sleeping(n)
-			if err == nil {
-				goto retry
-			}
-		}
 		return nil, err
 	}
 

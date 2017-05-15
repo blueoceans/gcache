@@ -66,16 +66,10 @@ func GetGDriveFile(
 ) {
 	var payload []byte
 
-retry:
-	service, err := drive.New(createGDriveClient(r))
+	service, err := GetGDriveService(r)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		}
 		return nil, nil, err
 	}
-
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
 	if err != nil {
 		return nil, nil, err

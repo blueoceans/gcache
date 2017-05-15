@@ -51,13 +51,8 @@ func getDriveFolder(
 	error,
 ) {
 
-retry:
-	service, err := drive.New(createGDriveClient(r))
+	service, err := GetGDriveService(r)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		}
 		return "", err
 	}
 
@@ -81,13 +76,8 @@ func createDriveFolder(
 	error,
 ) {
 
-retry:
-	service, err := drive.New(createGDriveClient(r))
+	service, err := GetGDriveService(r)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		}
 		return "", err
 	}
 
