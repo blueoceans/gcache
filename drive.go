@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"golang.org/x/oauth2"
 	"google.golang.org/api/drive/v3"
@@ -21,12 +22,18 @@ func GetGDriveService(
 	*drive.Service,
 	error,
 ) {
+	n := 1
 retry:
 	service, err := drive.New(createGDriveClient(r))
 	if err != nil {
 		if IsInvalidSecurityTicket(err) {
 			oauth2TokenSource = nil
 			goto retry
+		} else if IsServerError(err) {
+			n, err = sleeping(n)
+			if err == nil {
+				goto retry
+			}
 		}
 		return nil, err
 	}
