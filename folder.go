@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	parentFolderID string
+	rootFolderID string
 
 	folderParams = &drive.File{
 		Name:     folderName,
@@ -28,20 +28,20 @@ func SetRootFolder(
 	folderPermission = permission
 }
 
-func getParentFolderID(
+func getRootFolderID(
 	r *http.Request,
 ) (
 	string,
 	error,
 ) {
-	if parentFolderID != "" {
-		return parentFolderID, nil
+	if rootFolderID != "" {
+		return rootFolderID, nil
 	}
-	parentFolderID, err := getDriveFolder(r)
+	rootFolderID, err := getDriveFolder(r)
 	if err != nil {
 		return "", err
 	}
-	return parentFolderID, nil
+	return rootFolderID, nil
 }
 
 func getDriveFolder(

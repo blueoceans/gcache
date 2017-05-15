@@ -49,7 +49,7 @@ retry:
 		return nil, err
 	}
 
-	folderID, err := getParentFolderID(r)
+	folderID, err := getRootFolderID(r)
 	if err != nil {
 		return nil, err
 	}
