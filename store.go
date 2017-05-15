@@ -115,12 +115,17 @@ retry:
 // StoreGDrive stores a file to Google Drive.
 func StoreGDrive(
 	r *http.Request,
-	name string,
+	file *drive.File,
 	payload *[]byte,
 ) (
 	*drive.File,
 	error,
 ) {
+
+	if file.Name == "" {
+		return nil, errors.New("`file.Name` must be enough")
+	}
+
 	n := 1
 retry:
 	service, err := drive.New(createGDriveClient(r))
@@ -142,11 +147,10 @@ retry:
 		return nil, err
 	}
 
-	file, err := service.Files.Create(&drive.File{
-		Name:     name,
-		MimeType: mimeGSuiteDoc,
-		Parents:  []string{folderID},
-	}).Media(bytes.NewReader(*payload), googleapi.ContentType(mimeTxt)).Do()
+	file.Parents = append(file.Parents, folderID)
+	file.MimeType = mimeGSuiteDoc
+
+	file, err = service.Files.Create(file).Media(bytes.NewReader(*payload), googleapi.ContentType(mimeTxt)).Do()
 	if err != nil {
 		if IsInvalidSecurityTicket(err) {
 			oauth2TokenSource = nil
