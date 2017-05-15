@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
-	"strings"
 
 	"golang.org/x/oauth2"
 	"google.golang.org/api/drive/v3"
@@ -19,34 +17,6 @@ var (
 )
 
 func init() {
-}
-
-// GetFileName returns a file name on Google Drive.
-func GetFileName(
-	requestURI string,
-) (
-	string,
-	error,
-) {
-	uri, err := url.ParseRequestURI(requestURI)
-	if err != nil {
-		return "", err
-	}
-
-	splits := strings.SplitN(uri.Host, ":", 2) // hostname:port
-
-	// remove the standard port number
-	switch len(splits) {
-	case 2:
-		switch {
-		case
-			uri.Scheme == "http" && splits[1] == "80",
-			uri.Scheme == "https" && splits[1] == "443":
-			uri.Host = splits[0]
-		}
-	}
-
-	return uri.String(), nil
 }
 
 // GetGDriveFile returns a file on Google Drive.
