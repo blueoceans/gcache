@@ -15,8 +15,8 @@ var (
 		MimeType: mimeGSuiteFolder,
 	}
 
-	rootFolderName   string
 	folderPermission *drive.Permission
+	rootFolderName   string
 )
 
 // SetRootFolder sets name and permission to a top folder on Google Drive.
@@ -24,8 +24,8 @@ func SetRootFolder(
 	name string,
 	permission *drive.Permission,
 ) {
-	rootFolderName = name
 	folderPermission = permission
+	rootFolderName = name
 }
 
 func getRootFolderID(
