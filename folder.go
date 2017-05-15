@@ -11,11 +11,11 @@ var (
 	rootFolderID string
 
 	folderParams = &drive.File{
-		Name:     folderName,
+		Name:     rootFolderName,
 		MimeType: mimeGSuiteFolder,
 	}
 
-	folderName       string
+	rootFolderName   string
 	folderPermission *drive.Permission
 )
 
@@ -24,7 +24,7 @@ func SetRootFolder(
 	name string,
 	permission *drive.Permission,
 ) {
-	folderName = name
+	rootFolderName = name
 	folderPermission = permission
 }
 
@@ -62,7 +62,7 @@ retry:
 	}
 
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(
-		fmt.Sprintf("name='%s' and mimeType='%s'", folderName, mimeGSuiteFolder),
+		fmt.Sprintf("name='%s' and mimeType='%s'", rootFolderName, mimeGSuiteFolder),
 	).Fields(MinimumField).Do()
 	if err != nil {
 		return "", err
