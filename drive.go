@@ -1,6 +1,7 @@
 package gcache
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -14,6 +15,19 @@ import (
 var (
 	oauth2TokenSource oauth2.TokenSource // The token is valid for 30 minutes.
 )
+
+func sleeping(
+	n int,
+) (
+	int,
+	error,
+) {
+	if n > 16 {
+		return 0, errors.New("Sleeping Timeout")
+	}
+	time.Sleep(time.Duration(n)*time.Second + time.Duration(random.Intn(1000))*time.Millisecond)
+	return n * 2, nil
+}
 
 // GetGDriveService returns the API service of Google Drive.
 func GetGDriveService(

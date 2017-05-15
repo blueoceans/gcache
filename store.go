@@ -72,16 +72,3 @@ retry:
 	}
 	return file, nil
 }
-
-func sleeping(
-	n int,
-) (
-	int,
-	error,
-) {
-	if n > 16 {
-		return 0, errors.New("Sleeping Timeout")
-	}
-	time.Sleep(time.Duration(n)*time.Second + time.Duration(random.Intn(1000))*time.Millisecond)
-	return n * 2, nil
-}
