@@ -14,6 +14,25 @@ var (
 	oauth2TokenSource oauth2.TokenSource // The token is valid for 30 minutes.
 )
 
+// GetGDriveService returns the API service of Google Drive.
+func GetGDriveService(
+	r *http.Request,
+) (
+	*drive.Service,
+	error,
+) {
+retry:
+	service, err := drive.New(createGDriveClient(r))
+	if err != nil {
+		if IsInvalidSecurityTicket(err) {
+			oauth2TokenSource = nil
+			goto retry
+		}
+		return nil, err
+	}
+	return service, nil
+}
+
 // GetGDriveFile returns a file on Google Drive.
 func GetGDriveFile(
 	r *http.Request,
