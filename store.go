@@ -34,7 +34,7 @@ func StoreGDrive(
 	}
 
 	n := 1
-retry:
+refresh:
 	service, err := GetGDriveService(r)
 	if err != nil {
 		return nil, err
@@ -48,18 +48,18 @@ retry:
 	file.Parents = append(file.Parents, folderID)
 	file.MimeType = mimeGSuiteDoc
 
+retry:
 	file, err = service.Files.Create(file).Media(bytes.NewReader(*payload), googleapi.ContentType(mimeTxt)).Do()
+
+	if err == nil {
+		return file, nil
+	}
+	refreshToken, n, err := triable(n, err)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		} else if IsServerError(err) {
-			n, err = sleeping(n)
-			if err == nil {
-				goto retry
-			}
-		}
 		return nil, err
 	}
-	return file, nil
+	if refreshToken {
+		goto refresh
+	}
+	goto retry
 }

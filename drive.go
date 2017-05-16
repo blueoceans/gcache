@@ -26,19 +26,14 @@ func GetGDriveService(
 	n := 1
 retry:
 	service, err := drive.New(createGDriveClient(r))
+	if err == nil {
+		return service, nil
+	}
+	_, n, err = triable(n, err)
 	if err != nil {
-		if IsInvalidSecurityTicket(err) {
-			oauth2TokenSource = nil
-			goto retry
-		} else if IsServerError(err) {
-			n, err = sleeping(n)
-			if err == nil {
-				goto retry
-			}
-		}
 		return nil, err
 	}
-	return service, nil
+	goto retry
 }
 
 // GetGDriveFile returns a file on Google Drive.
