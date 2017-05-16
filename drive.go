@@ -46,6 +46,9 @@ func GetGDriveFile(
 	[]byte, // payload
 	error,
 ) {
+	if field == "" {
+		field = defaultField
+	}
 	var payload []byte
 
 	var refreshToken bool
