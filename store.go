@@ -32,6 +32,13 @@ func StoreGDrive(
 	if file.Name == "" {
 		return nil, errors.New("`file.Name` must be enough")
 	}
+	file.MimeType = mimeGSuiteDoc
+
+	folderID, err := getRootFolderID(r)
+	if err != nil {
+		return nil, err
+	}
+	file.Parents = append(file.Parents, folderID)
 
 	n := 1
 refresh:
@@ -39,15 +46,6 @@ refresh:
 	if err != nil {
 		return nil, err
 	}
-
-	folderID, err := getRootFolderID(r)
-	if err != nil {
-		return nil, err
-	}
-
-	file.Parents = append(file.Parents, folderID)
-	file.MimeType = mimeGSuiteDoc
-
 retry:
 	file, err = service.Files.Create(file).Media(bytes.NewReader(*payload), googleapi.ContentType(mimeTxt)).Do()
 
