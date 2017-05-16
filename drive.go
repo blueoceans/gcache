@@ -48,19 +48,35 @@ func GetGDriveFile(
 ) {
 	var payload []byte
 
+	var refreshToken bool
+	n := 1
+refresh:
 	service, err := GetGDriveService(r)
 	if err != nil {
 		return nil, nil, err
 	}
+
+retryList:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
+
 	if err != nil {
-		return nil, nil, err
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return nil, nil, err
+		}
+		if refreshToken {
+			goto refresh
+		}
+		goto retryList
 	}
+
 	if len(fileList.Files) <= 0 {
 		return nil, nil, &DriveFileDoesNotExistError{}
 	}
 	file := fileList.Files[0]
 	fileID := file.Id
+
+retryExport:
 	httpResponse, err := service.Files.Export(fileID, mimeTxt).Download()
 	if IsFileNotExportableError(err) {
 		err = service.Files.Delete(fileID).Do()
@@ -70,7 +86,17 @@ func GetGDriveFile(
 		return nil, nil, &DriveFileDoesNotExistError{}
 	}
 	if err != nil {
-		return nil, nil, err
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return nil, nil, err
+		}
+		if refreshToken {
+			service, err = GetGDriveService(r)
+			if err != nil {
+				return nil, nil, err
+			}
+		}
+		goto retryExport
 	}
 
 	defer httpResponse.Body.Close()
