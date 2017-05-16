@@ -32,32 +32,50 @@ func StoreGDrive(
 	if file.Name == "" {
 		return nil, errors.New("`file.Name` must be enough")
 	}
-	file.MimeType = mimeGSuiteDoc
 
-	folderID, err := getRootFolderID(r)
+	existFile, service, err := getGDriveFile(r, file.Name, "")
 	if err != nil {
-		return nil, err
+		if _, ok := err.(DriveFileDoesNotExistError); !ok {
+			return nil, err
+		}
 	}
-	file.Parents = append(file.Parents, folderID)
+
+	if existFile == nil {
+		file.MimeType = mimeGSuiteDoc
+		folderID, err := getRootFolderID(r)
+		if err != nil {
+			return nil, err
+		}
+		file.Parents = append(file.Parents, folderID)
+	}
+
+	contentType := googleapi.ContentType(mimeTxt)
+	var (
+		newFile      *drive.File
+		refreshToken bool
+	)
 
 	n := 1
-refresh:
-	service, err := GetGDriveService(r)
-	if err != nil {
-		return nil, err
-	}
 retry:
-	file, err = service.Files.Create(file).Media(bytes.NewReader(*payload), googleapi.ContentType(mimeTxt)).Do()
+	payloadReader := bytes.NewReader(*payload)
+	if existFile == nil {
+		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
+	} else {
+		newFile, err = service.Files.Update(existFile.Id, existFile).Media(payloadReader, contentType).Do()
+	}
 
 	if err == nil {
-		return file, nil
+		return newFile, nil
 	}
-	refreshToken, n, err := triable(n, err)
+	refreshToken, n, err = triable(n, err)
 	if err != nil {
 		return nil, err
 	}
 	if refreshToken {
-		goto refresh
+		service, err = GetGDriveService(r)
+		if err != nil {
+			return nil, err
+		}
 	}
 	goto retry
 }
