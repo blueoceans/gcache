@@ -36,6 +36,47 @@ retry:
 	goto retry
 }
 
+func getGDriveFile(
+	r *http.Request,
+	name string,
+	field googleapi.Field,
+) (
+	*drive.File,
+	*drive.Service,
+	error,
+) {
+	if field == "" {
+		field = MinimumField
+	}
+
+	var refreshToken bool
+	n := 1
+refresh:
+	service, err := GetGDriveService(r)
+	if err != nil {
+		return nil, nil, err
+	}
+
+retry:
+	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
+
+	if err != nil {
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return nil, nil, err
+		}
+		if refreshToken {
+			goto refresh
+		}
+		goto retry
+	}
+
+	if len(fileList.Files) <= 0 {
+		return nil, nil, &DriveFileDoesNotExistError{}
+	}
+	return fileList.Files[0], service, nil
+}
+
 // GetGDriveFile returns a file on Google Drive.
 func GetGDriveFile(
 	r *http.Request,
