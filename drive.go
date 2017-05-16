@@ -86,6 +86,34 @@ func GetGDriveFile(
 	return file, payload, err
 }
 
+func triable(
+	retries int,
+	err error,
+) (
+	bool, //refreshToken
+	int, //retries
+	error,
+) {
+	if err == nil {
+		return false, retries, nil
+	}
+	if retries < 1 {
+		retries = 1
+	}
+	if IsInvalidSecurityTicket(err) {
+		oauth2TokenSource = nil
+		return true, retries, nil
+	}
+	if IsServerError(err) {
+		retries, err = sleeping(retries)
+		if err != nil {
+			return false, retries, err
+		}
+		return false, retries, nil
+	}
+	return false, retries, err
+}
+
 func sleeping(
 	n int,
 ) (
