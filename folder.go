@@ -90,6 +90,31 @@ retry:
 	return fileList, nil
 }
 
+// GetGDiveFolderIDs returns a map of folder IDs on Google Drive.
+func GetGDiveFolderIDs(
+	r *http.Request,
+	q string,
+) (
+	*map[string]string,
+	error,
+) {
+
+	const field googleapi.Field = "files(" +
+		"name," +
+		"id)"
+
+	fileList, err := getFolder(r, q, field)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make(map[string]string, len(fileList.Files))
+	for _, v := range fileList.Files {
+		result[v.Name] = v.Id
+	}
+	return &result, nil
+}
+
 func createFolder(
 	r *http.Request,
 ) (
