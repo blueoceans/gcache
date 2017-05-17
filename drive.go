@@ -84,6 +84,27 @@ func GetGDriveFile(
 	field googleapi.Field,
 ) (
 	*drive.File,
+	error,
+) {
+	if field == "" {
+		field = defaultField
+	}
+
+	file, _, err := getGDriveFile(r, name, field)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
+// GetGDriveFileContent returns a file with content on Google Drive.
+func GetGDriveFileContent(
+	r *http.Request,
+	name string,
+	field googleapi.Field,
+) (
+	*drive.File,
 	[]byte, // payload
 	error,
 ) {
