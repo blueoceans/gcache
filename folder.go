@@ -20,9 +20,13 @@ var (
 func SetRootFolder(
 	name string,
 	permission *drive.Permission,
-) {
-	folderPermission = permission
+) error {
+	if name == "" {
+		return errors.New("`name` must be enough")
+	}
 	rootFolderName = name
+	folderPermission = permission
+	return nil
 }
 
 func getRootFolderID(
@@ -33,6 +37,9 @@ func getRootFolderID(
 ) {
 	if rootFolderID != "" {
 		return rootFolderID, nil
+	}
+	if rootFolderName == "" {
+		return "", errors.New("must SetRootFolder")
 	}
 	fileList, err := getFolder(r, fmt.Sprintf("name='%s'", rootFolderName), "")
 	if err != nil {
