@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/googleapi"
 )
 
 var (
@@ -37,42 +38,9 @@ func getRootFolderID(
 	if rootFolderID != "" {
 		return rootFolderID, nil
 	}
-	rootFolderID, err := getFolder(r)
+	fileList, err := getFolder(r, fmt.Sprintf("name='%s'", rootFolderName), "")
 	if err != nil {
 		return "", err
-	}
-	return rootFolderID, nil
-}
-
-func getFolder(
-	r *http.Request,
-) (
-	string,
-	error,
-) {
-
-	var refreshToken bool
-	n := 1
-refresh:
-	service, err := GetGDriveService(r)
-	if err != nil {
-		return "", err
-	}
-
-retry:
-	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(
-		fmt.Sprintf("name='%s' and mimeType='%s'", rootFolderName, mimeGSuiteFolder),
-	).Fields(MinimumField).Do()
-
-	if err != nil {
-		refreshToken, n, err = triable(n, err)
-		if err != nil {
-			return "", err
-		}
-		if refreshToken {
-			goto refresh
-		}
-		goto retry
 	}
 
 	if len(fileList.Files) == 1 {
@@ -80,6 +48,46 @@ retry:
 	}
 
 	return createFolder(r)
+}
+
+func getFolder(
+	r *http.Request,
+	q string,
+	field googleapi.Field,
+) (
+	*drive.FileList,
+	error,
+) {
+	if q != "" {
+		q = fmt.Sprintf("mimeType='%s' and (%s)", mimeGSuiteFolder, q)
+	}
+	if field == "" {
+		field = MinimumField
+	}
+
+	var refreshToken bool
+	n := 1
+refresh:
+	service, err := GetGDriveService(r)
+	if err != nil {
+		return nil, err
+	}
+
+retry:
+	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(q).Fields(field).Do()
+
+	if err != nil {
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return nil, err
+		}
+		if refreshToken {
+			goto refresh
+		}
+		goto retry
+	}
+
+	return fileList, nil
 }
 
 func createFolder(
