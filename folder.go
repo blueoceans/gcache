@@ -37,14 +37,14 @@ func getRootFolderID(
 	if rootFolderID != "" {
 		return rootFolderID, nil
 	}
-	rootFolderID, err := getDriveFolder(r)
+	rootFolderID, err := getFolder(r)
 	if err != nil {
 		return "", err
 	}
 	return rootFolderID, nil
 }
 
-func getDriveFolder(
+func getFolder(
 	r *http.Request,
 ) (
 	string,
