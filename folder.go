@@ -66,10 +66,10 @@ func getFolder(
 		return fileList.Files[0].Id, nil
 	}
 
-	return createDriveFolder(r)
+	return createFolder(r)
 }
 
-func createDriveFolder(
+func createFolder(
 	r *http.Request,
 ) (
 	string,
