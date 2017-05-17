@@ -1,6 +1,7 @@
 package gcache
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -10,11 +11,6 @@ import (
 
 var (
 	rootFolderID string
-
-	folderParams = &drive.File{
-		Name:     rootFolderName,
-		MimeType: mimeGSuiteFolder,
-	}
 
 	folderPermission *drive.Permission
 	rootFolderName   string
@@ -115,12 +111,18 @@ func GetGDiveFolderIDs(
 	return &result, nil
 }
 
-func createRootFolder(
+// CreateFolder returns a ID of new Google Drive Folder.
+func CreateFolder(
 	r *http.Request,
+	name string,
 ) (
 	string,
 	error,
 ) {
+
+	if name == "" {
+		return "", errors.New("`name` must be enough")
+	}
 
 	var refreshToken bool
 	n := 1
@@ -131,7 +133,12 @@ refresh:
 	}
 
 retryFiles:
-	file, err := service.Files.Create(folderParams).Do()
+	file, err := service.Files.Create(
+		&drive.File{
+			Name:     name,
+			MimeType: mimeGSuiteFolder,
+		},
+	).Do()
 
 	if err != nil {
 		refreshToken, n, err = triable(n, err)
@@ -162,4 +169,13 @@ retryPermissions:
 	}
 
 	return file.Id, nil
+}
+
+func createRootFolder(
+	r *http.Request,
+) (
+	string,
+	error,
+) {
+	return CreateFolder(r, rootFolderName)
 }
