@@ -47,7 +47,7 @@ func getRootFolderID(
 		return fileList.Files[0].Id, nil
 	}
 
-	return createFolder(r)
+	return createRootFolder(r)
 }
 
 func getFolder(
@@ -115,7 +115,7 @@ func GetGDiveFolderIDs(
 	return &result, nil
 }
 
-func createFolder(
+func createRootFolder(
 	r *http.Request,
 ) (
 	string,
