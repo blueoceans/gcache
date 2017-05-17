@@ -51,17 +51,30 @@ func getFolder(
 	error,
 ) {
 
+	var refreshToken bool
+	n := 1
+refresh:
 	service, err := GetGDriveService(r)
 	if err != nil {
 		return "", err
 	}
 
+retry:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(
 		fmt.Sprintf("name='%s' and mimeType='%s'", rootFolderName, mimeGSuiteFolder),
 	).Fields(MinimumField).Do()
+
 	if err != nil {
-		return "", err
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return "", err
+		}
+		if refreshToken {
+			goto refresh
+		}
+		goto retry
 	}
+
 	if len(fileList.Files) == 1 {
 		return fileList.Files[0].Id, nil
 	}
@@ -76,18 +89,44 @@ func createFolder(
 	error,
 ) {
 
+	var refreshToken bool
+	n := 1
+refresh:
 	service, err := GetGDriveService(r)
 	if err != nil {
 		return "", err
 	}
 
+retryFiles:
 	file, err := service.Files.Create(folderParams).Do()
+
 	if err != nil {
-		return "", err
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return "", err
+		}
+		if refreshToken {
+			goto refresh
+		}
+		goto retryFiles
 	}
+
+retryPermissions:
 	_, err = service.Permissions.Create(file.Id, folderPermission).Do()
+
 	if err != nil {
-		return "", err
+		refreshToken, n, err = triable(n, err)
+		if err != nil {
+			return "", err
+		}
+		if refreshToken {
+			service, err = GetGDriveService(r)
+			if err != nil {
+				return "", err
+			}
+		}
+		goto retryPermissions
 	}
+
 	return file.Id, nil
 }
