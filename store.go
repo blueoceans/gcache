@@ -42,11 +42,13 @@ func StoreGDrive(
 
 	if existFile == nil {
 		file.MimeType = mimeGSuiteDoc
-		folderID, err := getRootFolderID(r)
-		if err != nil {
-			return nil, err
+		if file.Parents == nil {
+			folderID, err := getRootFolderID(r)
+			if err != nil {
+				return nil, err
+			}
+			file.Parents = []string{folderID}
 		}
-		file.Parents = append(file.Parents, folderID)
 	}
 
 	contentType := googleapi.ContentType(mimeTxt)

@@ -121,14 +121,25 @@ func GetGDiveFolderIDs(
 // CreateFolder returns a ID of new Google Drive Folder.
 func CreateFolder(
 	r *http.Request,
-	name string,
+	file *drive.File,
 ) (
 	string,
 	error,
 ) {
 
-	if name == "" {
-		return "", errors.New("`name` must be enough")
+	if file.Name == "" {
+		return "", errors.New("`file.Name` must be enough")
+	}
+
+	file.MimeType = mimeGSuiteFolder
+	if file.Parents == nil {
+		if file.Name != rootFolderName {
+			folderID, err := getRootFolderID(r)
+			if err != nil {
+				return "", err
+			}
+			file.Parents = []string{folderID}
+		}
 	}
 
 	var refreshToken bool
@@ -140,12 +151,7 @@ refresh:
 	}
 
 retryFiles:
-	file, err := service.Files.Create(
-		&drive.File{
-			Name:     name,
-			MimeType: mimeGSuiteFolder,
-		},
-	).Do()
+	file, err = service.Files.Create(file).Do()
 
 	if err != nil {
 		refreshToken, n, err = triable(n, err)
@@ -184,5 +190,9 @@ func createRootFolder(
 	string,
 	error,
 ) {
-	return CreateFolder(r, rootFolderName)
+	return CreateFolder(r,
+		&drive.File{
+			Name: rootFolderName,
+		},
+	)
 }
