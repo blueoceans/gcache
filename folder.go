@@ -62,7 +62,7 @@ func getFolder(
 	error,
 ) {
 	if q != "" {
-		q = fmt.Sprintf("mimeType='%s' and (%s)", mimeGSuiteFolder, q)
+		q = fmt.Sprintf("mimeType='%s' and (%s)", MimeGSuiteFolder, q)
 	}
 	if field == "" {
 		field = MinimumField
@@ -131,7 +131,7 @@ func CreateFolder(
 		return "", errors.New("`file.Name` must be enough")
 	}
 
-	file.MimeType = mimeGSuiteFolder
+	file.MimeType = MimeGSuiteFolder
 	if file.Parents == nil {
 		if file.Name != rootFolderName {
 			folderID, err := getRootFolderID(r)

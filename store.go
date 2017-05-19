@@ -41,7 +41,7 @@ func StoreGDrive(
 	}
 
 	if existFile == nil {
-		file.MimeType = mimeGSuiteDoc
+		file.MimeType = MimeGSuiteDoc
 		if file.Parents == nil {
 			folderID, err := getRootFolderID(r)
 			if err != nil {
