@@ -29,7 +29,7 @@ retry:
 	if err == nil {
 		return service, nil
 	}
-	_, n, err = triable(n, err)
+	_, n, err = Triable(n, err)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ retry:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
 
 	if err != nil {
-		refreshToken, n, err = triable(n, err)
+		refreshToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -132,7 +132,7 @@ retry:
 		return nil, nil, &DriveFileDoesNotExistError{}
 	}
 	if err != nil {
-		refreshToken, n, err = triable(n, err)
+		refreshToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -153,7 +153,8 @@ retry:
 	return file, payload, err
 }
 
-func triable(
+// Triable returns whether it can retry or not.
+func Triable(
 	retries int,
 	err error,
 ) (

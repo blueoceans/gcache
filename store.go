@@ -69,7 +69,7 @@ retry:
 	if err == nil {
 		return newFile, nil
 	}
-	refreshToken, n, err = triable(n, err)
+	refreshToken, n, err = Triable(n, err)
 	if err != nil {
 		return nil, err
 	}

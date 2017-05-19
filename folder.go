@@ -80,7 +80,7 @@ retry:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(q).Fields(field).Do()
 
 	if err != nil {
-		refreshToken, n, err = triable(n, err)
+		refreshToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, err
 		}
@@ -154,7 +154,7 @@ retryFiles:
 	file, err = service.Files.Create(file).Do()
 
 	if err != nil {
-		refreshToken, n, err = triable(n, err)
+		refreshToken, n, err = Triable(n, err)
 		if err != nil {
 			return "", err
 		}
@@ -168,7 +168,7 @@ retryPermissions:
 	_, err = service.Permissions.Create(file.Id, folderPermission).Do()
 
 	if err != nil {
-		refreshToken, n, err = triable(n, err)
+		refreshToken, n, err = Triable(n, err)
 		if err != nil {
 			return "", err
 		}
