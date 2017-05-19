@@ -77,6 +77,7 @@ refresh:
 	}
 
 retry:
+	<-tokenBucketGDriveAPI
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(q).Fields(field).Do()
 
 	if err != nil {
@@ -151,6 +152,7 @@ refresh:
 	}
 
 retryFiles:
+	<-tokenBucketGDriveAPI
 	file, err = service.Files.Create(file).Do()
 
 	if err != nil {
@@ -165,6 +167,7 @@ retryFiles:
 	}
 
 retryPermissions:
+	<-tokenBucketGDriveAPI
 	_, err = service.Permissions.Create(file.Id, folderPermission).Do()
 
 	if err != nil {

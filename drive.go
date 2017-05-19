@@ -58,6 +58,7 @@ refresh:
 	}
 
 retry:
+	<-tokenBucketGDriveAPI
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
 
 	if err != nil {
@@ -125,6 +126,7 @@ func GetGDriveFileContent(
 retry:
 	httpResponse, err := service.Files.Export(fileID, mimeTxt).Download()
 	if IsFileNotExportableError(err) {
+		<-tokenBucketGDriveAPI
 		err = service.Files.Delete(fileID).Do()
 		if err != nil {
 			// pass
