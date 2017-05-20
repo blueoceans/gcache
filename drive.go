@@ -167,9 +167,6 @@ func Triable(
 	if err == nil {
 		return false, retries, nil
 	}
-	if retries < 1 {
-		retries = 1
-	}
 	switch {
 	case IsInvalidSecurityTicket(err):
 		oauth2TokenSource = nil
@@ -190,8 +187,11 @@ func sleeping(
 	int,
 	error,
 ) {
-	if n > 16 {
+	switch {
+	case n > 16:
 		return 0, errors.New("Sleeping Timeout")
+	case n < 1:
+		n = 1
 	}
 	time.Sleep(time.Duration(n)*time.Second + time.Duration(random.Intn(1000))*time.Millisecond)
 	return n * 2, nil
