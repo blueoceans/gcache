@@ -170,11 +170,11 @@ func Triable(
 	if retries < 1 {
 		retries = 1
 	}
-	if IsInvalidSecurityTicket(err) {
+	switch {
+	case IsInvalidSecurityTicket(err):
 		oauth2TokenSource = nil
 		return true, retries, nil
-	}
-	if IsServerError(err) {
+	case IsServerError(err):
 		retries, err = sleeping(retries)
 		if err != nil {
 			return false, retries, err
