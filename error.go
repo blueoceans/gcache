@@ -4,12 +4,12 @@ import (
 	"strings"
 )
 
-var (
-	invalidSecurityTicket = []string{"invalid security ticket"}
 
-	deadlineExceededError  = []string{"Deadline exceeded"}
-	fileNotExportableError = []string{"fileNotExportable"}
-	serverError            = []string{
+var (
+	errInvalidSecurityTicket = []string{"invalid security ticket"}
+	errDeadlineExceeded      = []string{"Deadline exceeded"}
+	errFileNotExportable     = []string{"fileNotExportable"}
+	errServerError           = []string{
 		"500 Internal Server Error",
 		"502 Bad Gateway",
 		"503 Service Unavailable",
@@ -30,28 +30,28 @@ func (err DriveFileDoesNotExistError) Error() string {
 func IsInvalidSecurityTicket(
 	err error,
 ) bool {
-	return containsErrorMessage(err, invalidSecurityTicket)
+	return containsErrorMessage(err, errInvalidSecurityTicket)
 }
 
 // IsDeadlineExceededError returns is whether it is "Deadline exceeded" error or not.
 func IsDeadlineExceededError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, deadlineExceededError)
+	return containsErrorMessage(err, errDeadlineExceeded)
 }
 
 // IsFileNotExportableError returns is whether it is "fileNotExportable" error or not.
 func IsFileNotExportableError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, fileNotExportableError)
+	return containsErrorMessage(err, errFileNotExportable)
 }
 
 // IsServerError returns is whether it is 50X server errors or not.
 func IsServerError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, serverError)
+	return containsErrorMessage(err, errServerError)
 }
 
 func containsErrorMessage(
