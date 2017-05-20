@@ -10,7 +10,7 @@ memo = ""
   branch = "master"
   name = "github.com/blueoceans/go-common"
   packages = ["tokenbucket"]
-  revision = "4a1520fa565881c25d5be6031e2d6275def5da40"
+  revision = "7cbf06e9bcc0077352fada6bcf27fa40b32386a6"
 
 [[projects]]
   branch = "master"
