@@ -94,7 +94,7 @@ func containsErrorMessage(
 	}
 	errorMessage := err.Error()
 	for _, message := range messages {
-		if strings.Contains(message, errorMessage) {
+		if strings.Contains(errorMessage, message) {
 			return true
 		}
 	}
