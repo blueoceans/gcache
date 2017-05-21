@@ -4,16 +4,40 @@ import (
 	"strings"
 )
 
-var (
-	invalidSecurityTicket = []string{"invalid security ticket"}
+const (
+	// https://developers.google.com/drive/v3/web/handle-errors
+	// 400
+	reasonBadRequest            = "badRequest"
+	reasonInvalidSharingRequest = "invalidSharingRequest"
+	// 401
+	reasonAuthError = "authError"
+	// 403
+	reasonDailyLimitExceeded          = "dailyLimitExceeded"
+	reasonUserRateLimitExceeded       = "userRateLimitExceeded"
+	reasonRateLimitExceeded           = "rateLimitExceeded"
+	reasonSharingRateLimitExceeded    = "sharingRateLimitExceeded"
+	reasonAppNotAuthorizedToFile      = "appNotAuthorizedToFile"
+	reasonInsufficientFilePermissions = "insufficientFilePermissions"
+	reasonDomainPolicy                = "domainPolicy"
+	// 404
+	reasonNotFound = "notFound"
+	// 500
+	reasonBackendError = "backendError"
+)
 
-	deadlineExceededError  = []string{"Deadline exceeded"}
-	fileNotExportableError = []string{"fileNotExportable"}
-	serverError            = []string{
+var (
+	errInvalidSecurityTicket = []string{"invalid security ticket"}
+	errDeadlineExceeded      = []string{"Deadline exceeded"}
+	errFileNotExportable     = []string{"fileNotExportable"}
+	errServerError           = []string{
 		"500 Internal Server Error",
 		"502 Bad Gateway",
 		"503 Service Unavailable",
 		"504 Gateway Timeout",
+	}
+	errRateLimit = []string{
+		reasonUserRateLimitExceeded,
+		reasonRateLimitExceeded,
 	}
 )
 
@@ -30,28 +54,35 @@ func (err DriveFileDoesNotExistError) Error() string {
 func IsInvalidSecurityTicket(
 	err error,
 ) bool {
-	return containsErrorMessage(err, invalidSecurityTicket)
+	return containsErrorMessage(err, errInvalidSecurityTicket)
 }
 
 // IsDeadlineExceededError returns is whether it is "Deadline exceeded" error or not.
 func IsDeadlineExceededError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, deadlineExceededError)
+	return containsErrorMessage(err, errDeadlineExceeded)
 }
 
 // IsFileNotExportableError returns is whether it is "fileNotExportable" error or not.
 func IsFileNotExportableError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, fileNotExportableError)
+	return containsErrorMessage(err, errFileNotExportable)
 }
 
 // IsServerError returns is whether it is 50X server errors or not.
 func IsServerError(
 	err error,
 ) bool {
-	return containsErrorMessage(err, serverError)
+	return containsErrorMessage(err, errServerError)
+}
+
+// IsRateLimit returns is whether it is "userRateLimitExceeded" or "rateLimitExceeded" server errors or not.
+func IsRateLimit(
+	err error,
+) bool {
+	return containsErrorMessage(err, errRateLimit)
 }
 
 func containsErrorMessage(
@@ -63,7 +94,7 @@ func containsErrorMessage(
 	}
 	errorMessage := err.Error()
 	for _, message := range messages {
-		if strings.Contains(message, errorMessage) {
+		if strings.Contains(errorMessage, message) {
 			return true
 		}
 	}

@@ -58,6 +58,7 @@ refresh:
 	}
 
 retry:
+	<-tokenBucketGDriveAPI
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
 
 	if err != nil {
@@ -125,6 +126,7 @@ func GetGDriveFileContent(
 retry:
 	httpResponse, err := service.Files.Export(fileID, mimeTxt).Download()
 	if IsFileNotExportableError(err) {
+		<-tokenBucketGDriveAPI
 		err = service.Files.Delete(fileID).Do()
 		if err != nil {
 			// pass
@@ -165,14 +167,14 @@ func Triable(
 	if err == nil {
 		return false, retries, nil
 	}
-	if retries < 1 {
-		retries = 1
-	}
-	if IsInvalidSecurityTicket(err) {
+	switch {
+	case IsInvalidSecurityTicket(err):
 		oauth2TokenSource = nil
 		return true, retries, nil
-	}
-	if IsServerError(err) {
+	case IsRateLimit(err):
+		time.Sleep(msec100)
+		return false, retries, nil
+	case IsServerError(err):
 		retries, err = sleeping(retries)
 		if err != nil {
 			return false, retries, err
@@ -188,8 +190,11 @@ func sleeping(
 	int,
 	error,
 ) {
-	if n > 16 {
+	switch {
+	case n > 16:
 		return 0, errors.New("Sleeping Timeout")
+	case n < 1:
+		n = 1
 	}
 	time.Sleep(time.Duration(n)*time.Second + time.Duration(random.Intn(1000))*time.Millisecond)
 	return n * 2, nil
