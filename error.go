@@ -4,6 +4,26 @@ import (
 	"strings"
 )
 
+const (
+	// https://developers.google.com/drive/v3/web/handle-errors
+	// 400
+	reasonBadRequest            = "badRequest"
+	reasonInvalidSharingRequest = "invalidSharingRequest"
+	// 401
+	reasonAuthError = "authError"
+	// 403
+	reasonDailyLimitExceeded          = "dailyLimitExceeded"
+	reasonUserRateLimitExceeded       = "userRateLimitExceeded"
+	reasonRateLimitExceeded           = "rateLimitExceeded"
+	reasonSharingRateLimitExceeded    = "sharingRateLimitExceeded"
+	reasonAppNotAuthorizedToFile      = "appNotAuthorizedToFile"
+	reasonInsufficientFilePermissions = "insufficientFilePermissions"
+	reasonDomainPolicy                = "domainPolicy"
+	// 404
+	reasonNotFound = "notFound"
+	// 500
+	reasonBackendError = "backendError"
+)
 
 var (
 	errInvalidSecurityTicket = []string{"invalid security ticket"}
@@ -14,6 +34,10 @@ var (
 		"502 Bad Gateway",
 		"503 Service Unavailable",
 		"504 Gateway Timeout",
+	}
+	errRateLimit = []string{
+		reasonUserRateLimitExceeded,
+		reasonRateLimitExceeded,
 	}
 )
 
@@ -52,6 +76,13 @@ func IsServerError(
 	err error,
 ) bool {
 	return containsErrorMessage(err, errServerError)
+}
+
+// IsRateLimit returns is whether it is "userRateLimitExceeded" or "rateLimitExceeded" server errors or not.
+func IsRateLimit(
+	err error,
+) bool {
+	return containsErrorMessage(err, errRateLimit)
 }
 
 func containsErrorMessage(
