@@ -1,6 +1,8 @@
 package gcache
 
 import (
+	"time"
+
 	"google.golang.org/api/googleapi"
 )
 
@@ -16,4 +18,6 @@ const (
 		"md5Checksum," +
 		"size," +
 		"id)"
+
+	sec1 = time.Duration(1) * time.Second
 )

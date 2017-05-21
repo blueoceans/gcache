@@ -171,6 +171,9 @@ func Triable(
 	case IsInvalidSecurityTicket(err):
 		oauth2TokenSource = nil
 		return true, retries, nil
+	case IsRateLimit(err):
+		time.Sleep(sec1)
+		return false, retries, nil
 	case IsServerError(err):
 		retries, err = sleeping(retries)
 		if err != nil {
