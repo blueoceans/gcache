@@ -19,5 +19,5 @@ const (
 		"size," +
 		"id)"
 
-	sec1 = time.Duration(1) * time.Second
+	msec100 = time.Duration(100) * time.Millisecond
 )

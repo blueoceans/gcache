@@ -172,7 +172,7 @@ func Triable(
 		oauth2TokenSource = nil
 		return true, retries, nil
 	case IsRateLimit(err):
-		time.Sleep(sec1)
+		time.Sleep(msec100)
 		return false, retries, nil
 	case IsServerError(err):
 		retries, err = sleeping(retries)
