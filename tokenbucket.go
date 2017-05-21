@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	tokenBucketGDriveAPI chan byte
+	tokenBucketGDriveAPI chan struct{}
 )
 
 func init() {
@@ -14,6 +14,6 @@ func init() {
 }
 
 // GetTokenBucketGDriveAPI returns a token-bucket for calling the Google Drive API.
-func GetTokenBucketGDriveAPI() chan byte {
+func GetTokenBucketGDriveAPI() chan struct{} {
 	return tokenBucketGDriveAPI
 }
