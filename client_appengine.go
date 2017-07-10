@@ -21,8 +21,7 @@ const (
 func createGDriveClient(
 	r *http.Request,
 ) *http.Client {
-	c := appengine.NewContext(r)
-	c = appengine.Timeout(c, deadline)
+	c := appengine.Timeout(appengine.NewContext(r), deadline)
 	ctx := newappengine.NewContext(r)
 
 	if oauth2TokenSource == nil {
