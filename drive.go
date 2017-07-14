@@ -49,7 +49,7 @@ func getGDriveFile(
 		field = MinimumField
 	}
 
-	var refreshToken bool
+	var clearToken bool
 	n := 1
 refresh:
 	service, err := GetGDriveService(r)
@@ -62,11 +62,11 @@ retry:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
 
 	if err != nil {
-		refreshToken, n, err = Triable(n, err)
+		clearToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, nil, err
 		}
-		if refreshToken {
+		if clearToken {
 			goto refresh
 		}
 		goto retry
@@ -121,7 +121,7 @@ func GetGDriveFileContent(
 
 	var payload []byte
 
-	var refreshToken bool
+	var clearToken bool
 	n := 1
 retry:
 	httpResponse, err := service.Files.Export(fileID, mimeTxt).Download()
@@ -134,11 +134,11 @@ retry:
 		return nil, nil, &DriveFileDoesNotExistError{}
 	}
 	if err != nil {
-		refreshToken, n, err = Triable(n, err)
+		clearToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, nil, err
 		}
-		if refreshToken {
+		if clearToken {
 			service, err = GetGDriveService(r)
 			if err != nil {
 				return nil, nil, err
@@ -160,7 +160,7 @@ func Triable(
 	retries int,
 	err error,
 ) (
-	bool, //refreshToken
+	bool, //clearToken
 	int, //retries
 	error,
 ) {
