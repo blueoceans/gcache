@@ -1,12 +1,18 @@
-box: golang
+box: michilu/docker-goapp
 build:
   steps:
   - setup-go-workspace
   - script:
+      name: version
+      code: |
+        go version
+        goapp version
+  - script:
       name: dep
       code: |
-        go get -u github.com/golang/dep/...
-        dep ensure
+        GOROOT=/usr/local/go go get -u github.com/golang/dep/...
+        /usr/local/go_appengine/gopath/bin/dep ensure
+        /usr/local/go_appengine/gopath/bin/dep status
   - script:
       name: go build
       code: |
@@ -15,5 +21,18 @@ build:
       name: go test
       code: |
         go test .
+  - script:
+      name: set GOPATH
+      code: |
+        export GOPATH="$GOPATH:$WERCKER_SOURCE_DIR"
+        goapp env GOPATH
+  - script:
+      name: goapp build
+      code: |
+        goapp build .
+  - script:
+      name: goapp test
+      code: |
+        goapp test .
   - wercker/golint:
       exclude: "vendor/"
