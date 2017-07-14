@@ -8,8 +8,9 @@ import (
 
 func createTransport(
 	_ interface{},
+	ts *oauth2.TokenSource,
 ) *oauth2.Transport {
 	return &oauth2.Transport{
-		Source: oauth2TokenSource,
+		Source: *ts,
 	}
 }
