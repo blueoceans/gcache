@@ -166,6 +166,10 @@ retryFiles:
 		goto retryFiles
 	}
 
+	if folderPermission == nil {
+		return file.Id, nil
+	}
+
 retryPermissions:
 	<-tokenBucketGDriveAPI
 	_, err = service.Permissions.Create(file.Id, folderPermission).Do()
