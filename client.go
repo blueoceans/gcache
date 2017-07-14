@@ -15,14 +15,14 @@ func createGDriveClient(
 
 	if oauth2TokenSource == nil {
 		oauth2TokenSource = (&oauth2.Config{
-			ClientID:     "ClientID",
-			ClientSecret: "ClientSecret",
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
 			Endpoint:     google.Endpoint,
 			Scopes:       []string{drive.DriveFileScope},
 		}).TokenSource(
 			*ctx,
 			&oauth2.Token{
-				RefreshToken: "RefreshToken",
+				RefreshToken: refreshToken,
 			},
 		)
 	}
