@@ -68,7 +68,7 @@ func getFolder(
 		field = MinimumField
 	}
 
-	var refreshToken bool
+	var clearToken bool
 	n := 1
 refresh:
 	service, err := GetGDriveService(r)
@@ -81,11 +81,11 @@ retry:
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(q).Fields(field).Do()
 
 	if err != nil {
-		refreshToken, n, err = Triable(n, err)
+		clearToken, n, err = Triable(n, err)
 		if err != nil {
 			return nil, err
 		}
-		if refreshToken {
+		if clearToken {
 			goto refresh
 		}
 		goto retry
@@ -143,7 +143,7 @@ func CreateFolder(
 		}
 	}
 
-	var refreshToken bool
+	var clearToken bool
 	n := 1
 refresh:
 	service, err := GetGDriveService(r)
@@ -156,11 +156,11 @@ retryFiles:
 	file, err = service.Files.Create(file).Do()
 
 	if err != nil {
-		refreshToken, n, err = Triable(n, err)
+		clearToken, n, err = Triable(n, err)
 		if err != nil {
 			return "", err
 		}
-		if refreshToken {
+		if clearToken {
 			goto refresh
 		}
 		goto retryFiles
@@ -171,11 +171,11 @@ retryPermissions:
 	_, err = service.Permissions.Create(file.Id, folderPermission).Do()
 
 	if err != nil {
-		refreshToken, n, err = Triable(n, err)
+		clearToken, n, err = Triable(n, err)
 		if err != nil {
 			return "", err
 		}
-		if refreshToken {
+		if clearToken {
 			service, err = GetGDriveService(r)
 			if err != nil {
 				return "", err

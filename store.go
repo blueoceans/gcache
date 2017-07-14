@@ -53,8 +53,8 @@ func StoreGDrive(
 
 	contentType := googleapi.ContentType(mimeTxt)
 	var (
-		newFile      *drive.File
-		refreshToken bool
+		newFile    *drive.File
+		clearToken bool
 	)
 
 	n := 1
@@ -71,11 +71,11 @@ retry:
 	if err == nil {
 		return newFile, nil
 	}
-	refreshToken, n, err = Triable(n, err)
+	clearToken, n, err = Triable(n, err)
 	if err != nil {
 		return nil, err
 	}
-	if refreshToken {
+	if clearToken {
 		service, err = GetGDriveService(r)
 		if err != nil {
 			return nil, err
