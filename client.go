@@ -1,19 +1,13 @@
-// +build !appengine
-
 package gcache
 
 import (
 	"net/http"
-
-	"golang.org/x/oauth2"
 )
 
 func createGDriveClient(
-	_ interface{},
+	r *http.Request,
 ) *http.Client {
 	return &http.Client{
-		Transport: &oauth2.Transport{
-			Source: oauth2TokenSource,
-		},
+		Transport: createTransport(r),
 	}
 }
