@@ -12,21 +12,19 @@ import (
 	"google.golang.org/appengine/urlfetch"
 )
 
-func createGDriveClient(
+func createTransport(
 	r *http.Request,
-) *http.Client {
+) *oauth2.Transport {
 	ctx := newappengine.NewContext(r)
 
 	if oauth2TokenSource == nil {
 		oauth2TokenSource = google.AppEngineTokenSource(ctx, drive.DriveFileScope)
 	}
 
-	return &http.Client{
-		Transport: &oauth2.Transport{
-			Source: oauth2TokenSource,
-			Base: &urlfetch.Transport{
-				Context: ctx,
-			},
+	return &oauth2.Transport{
+		Source: oauth2TokenSource,
+		Base: &urlfetch.Transport{
+			Context: ctx,
 		},
 	}
 }
