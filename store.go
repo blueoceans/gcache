@@ -35,7 +35,7 @@ func StoreGDrive(
 
 	existFile, service, err := getGDriveFile(r, file.Name, "")
 	if err != nil {
-		if _, ok := err.(DriveFileDoesNotExistError); !ok {
+		if _, ok := err.(*DriveFileDoesNotExistError); !ok {
 			return nil, err
 		}
 	}
