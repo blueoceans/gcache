@@ -73,7 +73,7 @@ retry:
 	}
 
 	if len(fileList.Files) <= 0 {
-		return nil, nil, &DriveFileDoesNotExistError{}
+		return nil, nil, NewDriveFileDoesNotExistError()
 	}
 	return fileList.Files[0], service, nil
 }
@@ -131,7 +131,7 @@ retry:
 		if err != nil {
 			// pass
 		}
-		return nil, nil, &DriveFileDoesNotExistError{}
+		return nil, nil, NewDriveFileDoesNotExistError()
 	}
 	if err != nil {
 		clearToken, n, err = Triable(n, err)

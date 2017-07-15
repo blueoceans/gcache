@@ -43,11 +43,16 @@ var (
 
 // DriveFileDoesNotExistError is as HTTP response that is 40X HTTP status.
 type DriveFileDoesNotExistError struct {
-	message string "drive: file does not exist"
+	message string
 }
 
 func (err DriveFileDoesNotExistError) Error() string {
 	return err.message
+}
+
+// NewDriveFileDoesNotExistError returns a DriveFileDoesNotExistError.
+func NewDriveFileDoesNotExistError() *DriveFileDoesNotExistError {
+	return &DriveFileDoesNotExistError{message: "drive: file does not exist"}
 }
 
 // IsInvalidSecurityTicket returns is whether it is "invalid security ticket" error or not.
