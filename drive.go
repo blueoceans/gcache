@@ -64,7 +64,7 @@ retry:
 	if err != nil {
 		clearToken, n, err = Triable(n, err)
 		if err != nil {
-			return nil, nil, err
+			return nil, service, err
 		}
 		if clearToken {
 			goto refresh
@@ -73,7 +73,7 @@ retry:
 	}
 
 	if len(fileList.Files) <= 0 {
-		return nil, nil, NewDriveFileDoesNotExistError()
+		return nil, service, NewDriveFileDoesNotExistError()
 	}
 	return fileList.Files[0], service, nil
 }
