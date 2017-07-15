@@ -51,7 +51,7 @@ func (err DriveFileDoesNotExistError) Error() string {
 }
 
 // NewDriveFileDoesNotExistError returns a DriveFileDoesNotExistError.
-func NewDriveFileDoesNotExistError() *DriveFileDoesNotExistError {
+func NewDriveFileDoesNotExistError() error {
 	return &DriveFileDoesNotExistError{message: "drive: file does not exist"}
 }
 
