@@ -117,7 +117,7 @@ retry:
 	return file, service, nil
 }
 
-// GetGDriveFile returns a file on Google Drive.
+// GetGDriveFile returns a file that is a given file name on Google Drive.
 func GetGDriveFile(
 	r *http.Request,
 	name string,
