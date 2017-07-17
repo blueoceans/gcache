@@ -78,7 +78,46 @@ retry:
 	return fileList.Files[0], service, nil
 }
 
-// GetGDriveFile returns a file on Google Drive.
+func getGDriveFileByID(
+	r *http.Request,
+	id string,
+	field googleapi.Field,
+) (
+	*drive.File,
+	*drive.Service,
+	error,
+) {
+	if field == "" {
+		field = MinimumField
+	}
+
+	var clearToken bool
+	n := 1
+refresh:
+	service, err := GetGDriveService(r)
+	if err != nil {
+		return nil, nil, err
+	}
+
+retry:
+	<-tokenBucketGDriveAPI
+	file, err := service.Files.Get(id).Fields(field).Do()
+
+	if err != nil {
+		clearToken, n, err = Triable(n, err)
+		if err != nil {
+			return nil, service, err
+		}
+		if clearToken {
+			goto refresh
+		}
+		goto retry
+	}
+
+	return file, service, nil
+}
+
+// GetGDriveFile returns a file that is a given file name on Google Drive.
 func GetGDriveFile(
 	r *http.Request,
 	name string,
@@ -92,6 +131,27 @@ func GetGDriveFile(
 	}
 
 	file, _, err := getGDriveFile(r, name, field)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
+// GetGDriveFileByID returns a file that is a given `file.Id` on Google Drive.
+func GetGDriveFileByID(
+	r *http.Request,
+	id string,
+	field googleapi.Field,
+) (
+	*drive.File,
+	error,
+) {
+	if field == "" {
+		field = defaultField
+	}
+
+	file, _, err := getGDriveFileByID(r, id, field)
 	if err != nil {
 		return nil, err
 	}
