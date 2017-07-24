@@ -62,7 +62,7 @@ retry:
 	if existFile == nil {
 		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
 	} else {
-		newFile, err = service.Files.Update(existFile.Id, existFile).Media(payloadReader, contentType).Do()
+		newFile, err = service.Files.Update(existFile.Id, file).Media(payloadReader, contentType).Do()
 	}
 
 	if err == nil {
