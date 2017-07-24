@@ -26,7 +26,10 @@ const (
 )
 
 var (
-	errDeadlineExceeded      = []string{"Deadline exceeded"}
+	errDeadlineExceeded = []string{
+		"Deadline exceeded",
+		"context deadline exceeded",
+	}
 	errFileNotExportable     = []string{"fileNotExportable"}
 	errInvalidSecurityTicket = []string{"invalid security ticket"}
 	errServerError           = []string{
