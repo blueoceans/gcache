@@ -19,9 +19,10 @@ func init() {
 	random = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-// StoreGDrive stores a file to Google Drive.
+// StoreGDrive stores a file that is a given filename on Google Drive.
 func StoreGDrive(
 	r *http.Request,
+	filename string,
 	file *drive.File,
 	payload *[]byte,
 ) (
@@ -29,14 +30,15 @@ func StoreGDrive(
 	error,
 ) {
 
-	if file.Name == "" {
-		return nil, errors.New("`file.Name` must be enough")
+	if filename == "" {
+		return nil, errors.New("`filename` must be enough")
 	}
 
-	existFile, service, err := getGDriveFile(r, file.Name, "")
+	existFile, service, err := getGDriveFile(r, filename, "")
 	switch err.(type) {
 	case nil:
 	case *DriveFileDoesNotExistError:
+		file.Name = filename
 		file.MimeType = MimeGSuiteDoc
 		if file.Parents == nil {
 			folderID, err := getRootFolderID(r)
