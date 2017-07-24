@@ -19,7 +19,7 @@ func init() {
 	random = rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-// StoreGDrive stores a file that is a given file ID or file name on Google Drive.
+// StoreGDrive stores a file to Google Drive.
 func StoreGDrive(
 	r *http.Request,
 	file *drive.File,
@@ -29,21 +29,14 @@ func StoreGDrive(
 	error,
 ) {
 
-	if file.Id == "" && file.Name == "" {
-		return nil, errors.New("`file.Id` or `file.Name` must be enough")
+	if file.Name == "" {
+		return nil, errors.New("`file.Name` must be enough")
 	}
 
-	var (
-		err       error
-		existFile *drive.File
-		service   *drive.Service
-	)
-	if file.Id == "" {
-		existFile, service, err = getGDriveFile(r, file.Name, "")
-		if err != nil {
-			if _, ok := err.(*DriveFileDoesNotExistError); !ok {
-				return nil, err
-			}
+	existFile, service, err := getGDriveFile(r, file.Name, "")
+	if err != nil {
+		if _, ok := err.(*DriveFileDoesNotExistError); !ok {
+			return nil, err
 		}
 	}
 
@@ -72,7 +65,7 @@ retry:
 		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
 	} else {
 		<-tokenBucketGDriveAPI
-		newFile, err = service.Files.Update(existFile.Id, file).Media(payloadReader, contentType).Do()
+		newFile, err = service.Files.Update(existFile.Id, existFile).Media(payloadReader, contentType).Do()
 	}
 
 	if err == nil {
