@@ -37,11 +37,6 @@ func StoreGDrive(
 	switch err.(type) {
 	case nil:
 	case *DriveFileDoesNotExistError:
-	default:
-		return nil, err
-	}
-
-	if existFile == nil {
 		file.MimeType = MimeGSuiteDoc
 		if file.Parents == nil {
 			folderID, err := getRootFolderID(r)
@@ -50,6 +45,8 @@ func StoreGDrive(
 			}
 			file.Parents = []string{folderID}
 		}
+	default:
+		return nil, err
 	}
 
 	contentType := googleapi.ContentType(mimeTxt)
