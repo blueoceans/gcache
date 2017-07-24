@@ -26,9 +26,9 @@ const (
 )
 
 var (
-	errInvalidSecurityTicket = []string{"invalid security ticket"}
 	errDeadlineExceeded      = []string{"Deadline exceeded"}
 	errFileNotExportable     = []string{"fileNotExportable"}
+	errInvalidSecurityTicket = []string{"invalid security ticket"}
 	errServerError           = []string{
 		"500 Internal Server Error",
 		"502 Bad Gateway",
