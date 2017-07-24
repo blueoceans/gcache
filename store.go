@@ -46,6 +46,12 @@ func StoreGDrive(
 			}
 		}
 	}
+	if service == nil {
+		service, err = GetGDriveService(r)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	if existFile == nil {
 		file.MimeType = MimeGSuiteDoc
