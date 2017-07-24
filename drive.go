@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -14,7 +15,13 @@ import (
 
 var (
 	oauth2TokenSource oauth2.TokenSource // The token is valid for 30 minutes.
+
+	random *rand.Rand
 )
+
+func init() {
+	random = rand.New(rand.NewSource(time.Now().UnixNano()))
+}
 
 // GetGDriveService returns the API service of Google Drive.
 func GetGDriveService(
