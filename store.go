@@ -58,11 +58,10 @@ func StoreGDrive(
 	n := 1
 retry:
 	payloadReader := bytes.NewReader(*payload)
+	<-tokenBucketGDriveAPI
 	if existFile == nil {
-		<-tokenBucketGDriveAPI
 		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
 	} else {
-		<-tokenBucketGDriveAPI
 		newFile, err = service.Files.Update(existFile.Id, existFile).Media(payloadReader, contentType).Do()
 	}
 
