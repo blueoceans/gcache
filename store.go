@@ -3,21 +3,11 @@ package gcache
 import (
 	"bytes"
 	"errors"
-	"math/rand"
 	"net/http"
-	"time"
 
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/googleapi"
 )
-
-var (
-	random *rand.Rand
-)
-
-func init() {
-	random = rand.New(rand.NewSource(time.Now().UnixNano()))
-}
 
 // StoreGDrive stores a file that is a given filename on Google Drive.
 func StoreGDrive(
