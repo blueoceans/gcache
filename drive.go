@@ -53,7 +53,7 @@ func getGDriveFile(
 	error,
 ) {
 	if field == "" {
-		field = MinimumField
+		field = MinimumFilesField
 	}
 
 	var refresh bool
@@ -95,7 +95,7 @@ func getGDriveFileByID(
 	error,
 ) {
 	if field == "" {
-		field = MinimumField
+		field = MinimumFilesField
 	}
 
 	var refresh bool

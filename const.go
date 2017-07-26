@@ -7,14 +7,19 @@ import (
 )
 
 const (
-	// MinimumField is minimim search fields on Google Drive API.
-	MinimumField googleapi.Field = "files/id"
-
-	defaultField googleapi.Field = "files(" +
+	// MinimumFilesField is minimim search fields on Google Drive API.
+	MinimumFilesField googleapi.Field = "files/id"
+	minimumField      googleapi.Field = "id"
+	defaultFilesField googleapi.Field = "files(" +
 		"appProperties," +
 		"modifiedTime," +
 		"name," +
 		"id)"
+	defaultField googleapi.Field = "" +
+		"appProperties," +
+		"modifiedTime," +
+		"name," +
+		"id"
 
 	msec100 = time.Duration(100) * time.Millisecond
 )

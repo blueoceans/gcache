@@ -65,7 +65,7 @@ func getFolder(
 		q = fmt.Sprintf("mimeType='%s' and (%s)", MimeGSuiteFolder, q)
 	}
 	if field == "" {
-		field = MinimumField
+		field = MinimumFilesField
 	}
 
 	var clearToken bool
