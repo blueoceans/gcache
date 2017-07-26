@@ -24,7 +24,7 @@ func StoreGDrive(
 		return nil, errors.New("`filename` must be enough")
 	}
 
-	existFile, service, err := getGDriveFile(r, filename, "")
+	existFile, service, err := getGDriveFile(r, filename, "files(id,parents)")
 	switch err.(type) {
 	case nil:
 	case *DriveFileDoesNotExistError:
@@ -54,7 +54,28 @@ retry:
 	if existFile == nil {
 		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
 	} else {
-		newFile, err = service.Files.Update(existFile.Id, file).Media(payloadReader, contentType).Do()
+		parents := file.Parents
+		file.Parents = nil
+		filesUpdateCall := service.Files.Update(existFile.Id, file).Media(payloadReader, contentType)
+		if parents != nil {
+			parentsMap := map[string]bool{}
+			for _, v := range parents {
+				parentsMap[v] = true
+			}
+			existParentsMap := map[string]bool{}
+			for _, v := range existFile.Parents {
+				existParentsMap[v] = true
+				if !parentsMap[v] {
+					filesUpdateCall = filesUpdateCall.RemoveParents(v)
+				}
+			}
+			for _, v := range parents {
+				if !existParentsMap[v] {
+					filesUpdateCall = filesUpdateCall.AddParents(v)
+				}
+			}
+		}
+		newFile, err = filesUpdateCall.Do()
 	}
 
 	if err == nil {
