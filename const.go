@@ -11,12 +11,12 @@ const (
 	MinimumField googleapi.Field = "files/id"
 
 	defaultField googleapi.Field = "files(" +
-		"name," +
 		"createdTime," +
 		"appProperties," +
 		"modifiedTime," +
 		"md5Checksum," +
 		"size," +
+		"name," +
 		"id)"
 
 	msec100 = time.Duration(100) * time.Millisecond
