@@ -62,7 +62,11 @@ func getFolder(
 	error,
 ) {
 	if q != "" {
-		q = fmt.Sprintf("mimeType='%s' and (%s)", MimeGSuiteFolder, q)
+		q = fmt.Sprintf(
+			"trashed=false and mimeType='%s' and (%s)",
+			MimeGSuiteFolder,
+			q,
+		)
 	}
 	if field == "" {
 		field = MinimumFilesField
@@ -78,7 +82,7 @@ refresh:
 
 retry:
 	<-tokenBucketGDriveAPI
-	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(q).Fields(field).Do()
+	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Fields(field).Q(q).Do()
 
 	if err != nil {
 		clearToken, n, err = Triable(n, err)

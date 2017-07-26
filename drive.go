@@ -66,7 +66,11 @@ refresh:
 
 retry:
 	<-tokenBucketGDriveAPI
-	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Q(fmt.Sprintf("name='%s'", name)).Fields(field).Do()
+	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Fields(field).Q(
+		fmt.Sprintf(
+			"trashed=false and name='%s'",
+			name,
+		)).Do()
 
 	if err != nil {
 		refresh, n, err = Triable(n, err)
