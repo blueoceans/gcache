@@ -52,11 +52,11 @@ retry:
 	payloadReader := bytes.NewReader(*payload)
 	<-tokenBucketGDriveAPI
 	if existFile == nil {
-		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Do()
+		newFile, err = service.Files.Create(file).Media(payloadReader, contentType).Fields(defaultField).Do()
 	} else {
 		parents := file.Parents
 		file.Parents = nil
-		filesUpdateCall := service.Files.Update(existFile.Id, file).Media(payloadReader, contentType)
+		filesUpdateCall := service.Files.Update(existFile.Id, file).Media(payloadReader, contentType).Fields(defaultField)
 		if parents != nil {
 			parentsMap := map[string]bool{}
 			for _, v := range parents {
