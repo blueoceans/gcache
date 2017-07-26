@@ -11,7 +11,6 @@ const (
 	MinimumField googleapi.Field = "files/id"
 
 	defaultField googleapi.Field = "files(" +
-		"createdTime," +
 		"appProperties," +
 		"modifiedTime," +
 		"md5Checksum," +
