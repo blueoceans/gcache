@@ -13,8 +13,6 @@ const (
 	defaultField googleapi.Field = "files(" +
 		"appProperties," +
 		"modifiedTime," +
-		"md5Checksum," +
-		"size," +
 		"name," +
 		"id)"
 
