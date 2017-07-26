@@ -68,7 +68,7 @@ retry:
 	<-tokenBucketGDriveAPI
 	fileList, err := service.Files.List().PageSize(1).Spaces("drive").Fields(field).Q(
 		fmt.Sprintf(
-			"name='%s'",
+			"trashed=false and name='%s'",
 			name,
 		)).Do()
 

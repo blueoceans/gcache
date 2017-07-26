@@ -63,7 +63,7 @@ func getFolder(
 ) {
 	if q != "" {
 		q = fmt.Sprintf(
-			"mimeType='%s' and (%s)",
+			"trashed=false and mimeType='%s' and (%s)",
 			MimeGSuiteFolder,
 			q,
 		)
