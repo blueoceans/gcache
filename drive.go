@@ -239,8 +239,6 @@ func Triable(
 		return false, retries, nil
 	}
 	switch {
-	case IsContextDeadlineExceededError(err):
-		return true, retries, nil
 	case IsInvalidSecurityTicket(err):
 		oauth2TokenSource = nil
 		return true, retries, nil
