@@ -26,11 +26,10 @@ const (
 )
 
 var (
-	errContextDeadlineExceeded = []string{"context deadline exceeded"}
-	errDeadlineExceeded        = []string{"Deadline exceeded"}
-	errFileNotExportable       = []string{"fileNotExportable"}
-	errInvalidSecurityTicket   = []string{"invalid security ticket"}
-	errServerError             = []string{
+	errDeadlineExceeded      = []string{"Deadline exceeded"}
+	errFileNotExportable     = []string{"fileNotExportable"}
+	errInvalidSecurityTicket = []string{"invalid security ticket"}
+	errServerError           = []string{
 		"500 Internal Server Error",
 		"502 Bad Gateway",
 		"503 Service Unavailable",
@@ -61,13 +60,6 @@ func IsInvalidSecurityTicket(
 	err error,
 ) bool {
 	return containsErrorMessage(err, errInvalidSecurityTicket)
-}
-
-// IsContextDeadlineExceededError returns is whether it is "context deadline exceeded" error or not.
-func IsContextDeadlineExceededError(
-	err error,
-) bool {
-	return containsErrorMessage(err, errContextDeadlineExceeded)
 }
 
 // IsDeadlineExceededError returns is whether it is "Deadline exceeded" error or not.
