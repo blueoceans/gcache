@@ -47,13 +47,16 @@ func StoreGDrive(
 
 	contentType := googleapi.ContentType(mimeTxt)
 	var (
-		newFile    *drive.File
-		clearToken bool
+		clearToken    bool
+		newFile       *drive.File
+		payloadReader *bytes.Reader
 	)
 
 	n := 1
 retry:
-	payloadReader := bytes.NewReader(*payload)
+	if payload != nil {
+		payloadReader = bytes.NewReader(*payload)
+	}
 	<-tokenBucketGDriveAPI
 	if existFile == nil {
 		serviceFilesCreate := service.Files.Create(file).Fields(defaultField)
